@@ -20,20 +20,39 @@ class ForceAngle(StabilityMetric[ForceAngleConfig, ForceAngleState]):
         return cls.__init__(config)
 
     def get(self, state: ForceAngleState) -> float:
-        tip_over_axis_normals = self._tip_over_axis_normals(state.centre_of_mass)
-        normalized_tip_over_axis_normals = normalize_all(tip_over_axis_normals)
         net_force = self._net_force_or_moment(state.reaction_forces)
-        net_force_about_tip_over_axes = self._net_force_about_tip_over_axes(
-            net_force,
-            state.reaction_moments,
-            normalized_tip_over_axis_normals
-        )
-        tip_over_angles = self._tip_over_angles(net_force_about_tip_over_axes,
-                                                normalized_tip_over_axis_normals)
+        net_moment = self._net_force_or_moment(state.reaction_moments)
+        tip_over_angles = self._tip_over_angles(net_force,
+                                                net_moment)
         return self._force_angle(net_force, tip_over_angles)
 
     def _force_angle(self, net_force: Vector3D, tip_over_angles: List[float]) -> float:
         return min(tip_over_angles[i] for i in range(self._n)) * np.linalg.norm(net_force)
+
+    def _net_force_or_moment(self, reaction_force_or_moments: List[Vector3D]) -> Vector3D:
+        return -sum(reaction_force_or_moments)
+
+    def _tip_over_angles(self,
+                         net_force: Vector3D,
+                         net_moments: Vector3D,
+                         centre_of_mass: Point3D
+                         ) -> List[float]:
+        normalized_tip_over_axis_normals = self._normalized_tip_over_axis_normals(centre_of_mass)
+        net_force_about_tip_over_axes = self._net_force_about_tip_over_axes(
+            net_force,
+            net_moments,
+            normalized_tip_over_axis_normals
+        )
+        normalized_net_force_about_tip_over_axes = normalize_all(net_force_about_tip_over_axes)
+        directions = self._tip_over_angle_directions(normalized_tip_over_axis_normals,
+                                                     normalized_net_force_about_tip_over_axes)
+        return [
+            directions[i] * np.arccos(normalized_net_force_about_tip_over_axes[i].dot(normalized_tip_over_axis_normals[i]))
+            for i in range(self._n)
+        ]
+
+    def _normalized_tip_over_axis_normals(self, centre_of_mass: Point3D):
+        return normalize_all(self._tip_over_axis_normals(centre_of_mass))
 
     def _tip_over_axis_normals(self, centre_of_mass: Point3D):
         return [
@@ -61,16 +80,25 @@ class ForceAngle(StabilityMetric[ForceAngleConfig, ForceAngleState]):
             for i in range(self._n)
         ]
 
-    @property
-    def _n(self) -> int:
-        return len(self._config.clockwise_ground_contact_points)
+    def _tip_over_angle_directions(self,
+                                   normalized_tip_over_axis_normals: List[Vector3D],
+                                   normalized_net_force_about_tip_over_axes: List[Vector3D]) -> int:
+        return [
+            1
+            if np.cross(
+                   normalized_tip_over_axis_normals[i],
+                   normalized_net_force_about_tip_over_axes[i]
+               ).dot(self._normalized_tip_over_axes[i]) < 0
+            else -1
+            for i in range(self._n)
+        ]
 
     def _net_force_about_tip_over_axes(self,
                                        net_force: Vector3D,
-                                       reaction_moments: List[Vector3D],
+                                       net_moment: Vector3D,
                                        normalized_tip_over_axis_normals: List[Vector3D]) -> Vector3D:
         net_force_about_tip_over_axes = self._net_force_or_moment_about_tip_over_axes(net_force)
-        net_moment_about_tip_over_axes = self._net_force_or_moment_about_tip_over_axes(self._net_force_or_moment(reaction_moments))
+        net_moment_about_tip_over_axes = self._net_force_or_moment_about_tip_over_axes(net_moment)
         return [
             net_force_about_tip_over_axes[i]
             + np.cross(normalized_tip_over_axis_normals[i],
@@ -86,23 +114,6 @@ class ForceAngle(StabilityMetric[ForceAngleConfig, ForceAngleState]):
             for i in range(self._n)
         ]
 
-    def _net_force_or_moment(self, reaction_force_or_moments: List[Vector3D]) -> Vector3D:
-        return -sum(reaction_force_or_moments)
-
-    def _tip_over_angles(self,
-                         net_force_about_tip_over_axes: List[Vector3D],
-                         normalized_tip_over_axis_normals: List[Vector3D]) -> List[float]:
-        normalized_net_force_about_tip_over_axes = normalize_all(net_force_about_tip_over_axes)
-        directions = [
-            1
-            if np.cross(
-                   normalized_tip_over_axis_normals[i],
-                   normalized_net_force_about_tip_over_axes[i]
-               ).dot(self._normalized_tip_over_axes[i]) < 0
-            else -1
-            for i in range(self._n)
-        ]
-        return [
-            directions[i] * np.arccos(normalized_net_force_about_tip_over_axes[i].dot(normalized_tip_over_axis_normals[i]))
-            for i in range(self._n)
-        ]
+    @property
+    def _n(self) -> int:
+        return len(self._config.clockwise_ground_contact_points)
