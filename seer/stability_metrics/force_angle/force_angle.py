@@ -64,7 +64,7 @@ class ForceAngle(StabilityMetric[ForceAngleConfig, ForceAngleState]):
     @cached_property
     def _to_tip_over_axis_normals(self):
         return [
-            (np.identity(3) - axis @ axis.T)
+            np.identity(3) - (np.outer(axis, axis))
             for axis in self._normalized_tip_over_axes
         ]
     
