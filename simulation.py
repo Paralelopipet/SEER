@@ -5,6 +5,7 @@ import pybullet
 import pybullet_data
 import time
 from enum import Enum
+from controller import ForceAngleController
 from measurements import *
 class ControlType(Enum):
     FORWARD_KINEMATICS = 1
@@ -165,6 +166,34 @@ def IK_control(pgui, robot_id, box_id, plane_id, joint_indices, target_positions
         time.sleep(config["timestep"])
         t+=config["timestep"]
 
+def testController(pgui, robot_id, joint_indices, client_id):
+    endEffectorLinkIndex=8
+    controller = ForceAngleController(time.time(), joint_indices, client_id, robot_id, endEffectorLinkIndex, True)
+    controller.generateTrajectory(time.time(), None,None)
+    prevPos = [0.,0.,0.]
+    prevPredictedPose = [0.,0.,0.]
+    pos,_,_,_,_,_ = pybullet.getLinkState(robot_id, endEffectorLinkIndex, physicsClientId=2)
+    print(f"Inital end effector pos: {pos}")
+    while True:
+        nextPose = controller.getNextJointPoses()
+        # print("Next Pose")
+        # print(nextPose)
+        control_mode = pybullet.POSITION_CONTROL
+        pgui.setJointMotorControlArray(robot_id, joint_indices, control_mode, targetPositions=nextPose)
+        # res = pybullet.getJointStates(robot_id, [0,1,2,3,4,5,6,7,8], 2)
+        # currentPose = [r[0] for r in res]
+        # print("current pose")
+        # print(currentPose)
+        pgui.stepSimulation()
+        time.sleep(0.1)
+        pos,_,_,_,_,_ = pybullet.getLinkState(robot_id, endEffectorLinkIndex, physicsClientId=2)
+        pgui.addUserDebugLine(prevPos, pos, [1, 0, 0], 1, 10,physicsClientId=2)
+        prevPos = pos
+        predictedPos = controller._nextPosition()
+        pgui.addUserDebugLine(prevPredictedPose, predictedPos, [0,0,1], 1, 10,physicsClientId=2)
+        prevPredictedPose = predictedPos
+        # print(pos)
+
 
 if __name__ == "__main__":
     pgui, robot_id, box_id, plane_id = load_environment()
@@ -180,4 +209,9 @@ if __name__ == "__main__":
     joint_indices = range(9)  # indices of the first three joints
     # Set the target joint positions
     target_positions = [0.2, 0.2, 1.3]  # target positions for the first three joints
-    IK_control(pgui, robot_id, box_id, plane_id, joint_indices, target_positions)
+    # IK_control(pgui, robot_id, box_id, plane_id, joint_indices, target_positions)
+
+
+    joint_indices = list(range(9))
+    print(f"Number of joints : {pybullet.getNumJoints(robot_id, 2)}")
+    testController(pgui, robot_id, joint_indices, 2)
