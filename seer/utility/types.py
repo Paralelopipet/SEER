@@ -1,5 +1,4 @@
-import numpy as np
+from pydantic_numpy import NDArray, dtype
 
-
-Point3D = np.ndarray
-Vector3D = np.ndarray
+Point3D = NDArray[dtype.float32]
+Vector3D = NDArray[dtype.float32]

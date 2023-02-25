@@ -30,7 +30,7 @@ class StabilityMetricAdapter(StabilityMetric[RobotConfig, RobotState], Generic[I
     @classmethod
     def instance(cls,
                  config: RobotConfig) -> StabilityMetric:
-        return cls.__init__(config,
-                            cls.DEFAULT_IMPLEMENTATION,
-                            cls.DEFAULT_CONFIG_ADAPTER,
-                            cls.DEFAULT_STATE_ADAPTER)
+        return cls(config,
+                   cls.DEFAULT_IMPLEMENTATION,
+                   cls.DEFAULT_CONFIG_ADAPTER,
+                   cls.DEFAULT_STATE_ADAPTER)
