@@ -1,4 +1,5 @@
 import math
+from pybullet_multigoal_gym.pybullet_multigoal_gym.utils.cube_path import CUBE_PATH
 from pybullet_utils import bullet_client as bc
 from pybullet_utils import urdfEditor as ed
 import pybullet
@@ -29,7 +30,7 @@ def load_environment():
 
     #can also connect using different modes, GUI, SHARED_MEMORY, TCP, UDP, SHARED_MEMORY_SERVER, GUI_SERVER
 
-    box = p1.loadURDF("cube.urdf", useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
+    box = p1.loadURDF(CUBE_PATH, useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
     panda = p0.loadURDF("franka_panda/panda.urdf")
     # panda = p0.loadURDF("kuka_iiwa/model.urdf")
 
