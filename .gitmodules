@@ -1,0 +1,7 @@
+[submodule "pybullet_multigoal_implementation"]
+	path = pybullet_multigoal_implementation
+	url = git@github.com:DSep/pybullet_multigoal_implementation.git
+[submodule "pybullet_multigoal_gym"]
+	path = pybullet_multigoal_gym
+	url = git@github.com:Paralelopipet/pybullet_multigoal_gym.git
+	branch = dev
