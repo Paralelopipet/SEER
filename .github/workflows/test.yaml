@@ -11,13 +11,11 @@ jobs:
           submodules: recursive
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
-      - name: Install dependencies
-        run: |
-          conda env create -f environment.yml
-          conda activate l32_seer
+          activate-environment: l32_seer
+          environment-file: environment.yml
+          python-version: 3.8
+          auto-activate-base: false
+      - run: |
           pip install --editable pybullet_multigoal_gym
-      - name: Test with pytest
-        run: |
+      - run: |
           pytest
