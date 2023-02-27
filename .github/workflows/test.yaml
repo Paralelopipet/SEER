@@ -6,15 +6,18 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v2
         with:
-          python-version: 3.9
+          submodules: recursive
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          conda env create -f environment.yml
+          conda activate l32_seer
+          pip install --editable pybullet_multigoal_gym
       - name: Test with pytest
         run: |
           pytest
