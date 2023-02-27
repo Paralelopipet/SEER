@@ -18,10 +18,11 @@ Run `pytest`
 
 ## Run Simulation
 
-Not sure which one it is but these should work:
+`python pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py`
 
-- `python simulation.py`
-- `python pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py`
+## Debug Simulation in VSCode
+
+Press `F5` (launch configuration `Tip Over Simulation`)
 
 ### Codestyle
 

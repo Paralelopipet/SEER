@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Tip Over Simulation",
+            "type": "python",
+            "request": "launch",
+            "program": "pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ],
+    "compounds": []
+}
