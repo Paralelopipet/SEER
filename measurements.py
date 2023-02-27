@@ -14,7 +14,8 @@ class Measurements:
         for link_idx in range(self.pgui.getNumJoints(self.robot_id)):
             link_mass = self.pgui.getDynamicsInfo(self.robot_id, link_idx, physicsClientId=2)[0]
             total_mass += link_mass
-        box_mass = self.pgui.getDynamicsInfo(self.box_id, link_idx, physicsClientId=2)[0]
+        box_mass = self.pgui.getDynamicsInfo(self.box_id,-1,physicsClientId=2)[0]
+        total_mass = total_mass + box_mass
         return total_mass
     def calculateArmMass(self):
         total_mass = 0
