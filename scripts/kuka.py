@@ -33,7 +33,7 @@ jd = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 for i in range(numJoints):
   p.resetJointState(kukaId, i, rp[i])
 
-p.setGravity(0, 0, 0)
+p.setGravity(0, 0, -9.81)
 t = 0.
 prevPose = [0, 0, 0]
 prevPose1 = [0, 0, 0]
@@ -68,7 +68,7 @@ while 1:
     p.stepSimulation()
 
   for i in range(1):
-    pos = [-0.4, 0.2 * math.cos(t), 0. + 0.2 * math.sin(t)]
+    pos = [-0.4, 0.2 * math.cos(t), 0 + 0.2 * math.sin(t)]
     #end effector points down, not up (in case useOrientation==1)
     orn = p.getQuaternionFromEuler([0, -math.pi, 0])
 
@@ -110,6 +110,8 @@ while 1:
                                 force=500,
                                 positionGain=0.03,
                                 velocityGain=1)
+        res = p.getJointStates(kukaId, list(range(numJoints)))
+        print([res[i][-1] for i in range(numJoints)])
     else:
       #reset the joint state (ignoring all dynamics, not recommended to use during simulation)
       for i in range(numJoints):
