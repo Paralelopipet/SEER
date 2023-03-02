@@ -6,8 +6,6 @@ from datetime import datetime
 import pybullet_data
 
 clid = p.connect(p.SHARED_MEMORY)
-
-
 if (clid < 0):
   p.connect(p.GUI)
 

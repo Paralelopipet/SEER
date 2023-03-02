@@ -7,4 +7,5 @@ from .types import RobotConfig
 
 ImplConfig = TypeVar("ImplConfig")
 
-ConfigAdapter = Type[Adapter[RobotConfig, ImplConfig]]
+class ConfigAdapter(Adapter[RobotConfig, ImplConfig]):
+    pass

@@ -7,4 +7,5 @@ from .types import RobotState
 
 ImplState = TypeVar("ImplState")
 
-StateAdapter = Type[Adapter[RobotState, ImplState]]
+class StateAdapter(Adapter[RobotState, ImplState]):
+    pass
