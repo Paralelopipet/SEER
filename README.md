@@ -10,7 +10,10 @@ Built by Damjan Denic, Martin Graf, Nav Leelarathna, and Sepand Dyanatkar
 2. Create conda environment `conda env create -f environment.yml`
     - note: this will take a while (3 to 4 coffees)
 3. Activate environment `conda activate l32_seer`
-4. Install gym package `pip install --editable pybullet_multigoal_gym`
+4. Install our gym package `pip install --editable pybullet_multigoal_gym`
+5. Install our RL package `pip install --editable pybullet_multigoal_implementation`
+
+TODO Sometimes you need to run `git submodule update --recursive --remote` (Why?)
 
 ## Test
 
