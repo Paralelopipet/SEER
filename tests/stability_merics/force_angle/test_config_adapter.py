@@ -4,7 +4,7 @@ from typing import Union
 import numpy as np
 import pytest
 
-from pybullet_multigoal_gym.pybullet_multigoal_gym.utils.cube_path import \
+from pybullet_multigoal_gym.utils.cube_path import \
     CUBE_PATH
 from seer.stability_metrics.adapter.types import RobotConfig
 from seer.stability_metrics.force_angle.config import ForceAngleConfig

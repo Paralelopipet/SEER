@@ -1,5 +1,5 @@
 import math
-from pybullet_multigoal_gym.pybullet_multigoal_gym.utils.cube_path import CUBE_PATH
+from pybullet_multigoal_gym.utils.cube_path import CUBE_PATH
 from pybullet_utils import bullet_client as bc
 from pybullet_utils import urdfEditor as ed
 import pybullet
