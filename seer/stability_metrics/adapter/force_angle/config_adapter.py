@@ -65,12 +65,13 @@ class ForceAngleConfigAdapter(ConfigAdapter[ForceAngleConfig]):
         xdim, ydim, zdim = size
         x_min = -xdim/2
         x_max = xdim/2
-        z_min = -zdim/2
-        z_max = zdim/2
-        y = -ydim/2
+        y_min = -ydim/2
+        y_max = ydim/2
+        z = -zdim/2
         return [
-            np.array([x_max, y, z_min]),
-            np.array([x_max, y, z_max]),
-            np.array([x_min, y, z_max]),
-            np.array([x_min, y, z_min])
+            # strange pybullet behaviour uses z for height
+            np.array([x_max, z, y_min]),
+            np.array([x_max, z, y_max]),
+            np.array([x_min, z, y_max]),
+            np.array([x_min, z, y_min])
         ]

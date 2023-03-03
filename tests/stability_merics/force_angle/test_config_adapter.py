@@ -32,10 +32,10 @@ CUBE_DIR = Path(__file__).parent / "cubes"
             "cube",
             ForceAngleConfig(
                 clockwise_ground_contact_points=[
-                    np.array([0.03, -0.02, -0.01]),
-                    np.array([0.03, -0.02, 0.01]),
-                    np.array([-0.03, -0.02, 0.01]),
-                    np.array([-0.03, -0.02, -0.01])
+                    np.array([0.03, -0.01, -0.02]),
+                    np.array([0.03, -0.01, 0.02]),
+                    np.array([-0.03, -0.01, 0.02]),
+                    np.array([-0.03, -0.01, -0.02])
                 ]
             ),
         ),
