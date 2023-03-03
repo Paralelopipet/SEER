@@ -1,6 +1,6 @@
 from .force_angle import ForceAngle
-from .config_adapter import ForceAngleConfigAdapter
-from .state_adapter import ForceAngleStateAdapter
+from ..adapter.force_angle.config_adapter import ForceAngleConfigAdapter
+from ..adapter.force_angle.state_adapter import ForceAngleStateAdapter
 
 
 

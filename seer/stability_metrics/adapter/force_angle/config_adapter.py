@@ -6,9 +6,9 @@ import numpy as np
 
 from seer.utility.types import Point3D
 
-from ..adapter.config_adapter import ConfigAdapter
-from ..adapter.types import RobotConfig
-from .config import ForceAngleConfig
+from ..config_adapter import ConfigAdapter
+from ..types import RobotConfig
+from ...force_angle.config import ForceAngleConfig
 
 CubeSize = Tuple[float, float, float]
 T = TypeVar("T")
