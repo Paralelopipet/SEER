@@ -1,11 +1,15 @@
-from ..types import RobotState
-from ..state_adapter import StateAdapter
+import numpy as np
+
+from seer.utility.types import Vector3D
+
 from ...force_angle.force_angle import ForceAngleState
+from ..state_adapter import StateAdapter
+from ..types import RobotState
+
 
 class ForceAngleStateAdapter(StateAdapter[ForceAngleState]):
     @classmethod
     def convert(cls, to_convert: RobotState) -> ForceAngleState:
-        # TODO
-        # note that all values in the robot state need to be relative to the cube origin!
-        # i.e., rotate and translate the forces and moments and centre of mass by the current orientation/position of the cube origin
-        return to_convert
+        return ForceAngleState(centre_of_mass=to_convert.centre_of_mass,
+                               reaction_forces=[-to_convert.net_force],
+                               reaction_moments=[-to_convert.net_moment])
