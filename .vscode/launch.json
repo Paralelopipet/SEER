@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false
         }
     ],
     "compounds": []
