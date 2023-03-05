@@ -6,9 +6,9 @@ import numpy as np
 
 from seer.utility.types import Point3D
 
-from ..adapter.config_adapter import ConfigAdapter
-from ..adapter.types import RobotConfig
-from .config import ForceAngleConfig
+from ..config_adapter import ConfigAdapter
+from ..types import RobotConfig
+from ...force_angle.config import ForceAngleConfig
 
 CubeSize = Tuple[float, float, float]
 T = TypeVar("T")
@@ -65,12 +65,12 @@ class ForceAngleConfigAdapter(ConfigAdapter[ForceAngleConfig]):
         xdim, ydim, zdim = size
         x_min = -xdim/2
         x_max = xdim/2
-        z_min = -zdim/2
-        z_max = zdim/2
-        y = -ydim/2
+        y_min = -ydim/2
+        y_max = ydim/2
+        z = -zdim/2
         return [
-            np.array([x_max, y, z_min]),
-            np.array([x_max, y, z_max]),
-            np.array([x_min, y, z_max]),
-            np.array([x_min, y, z_min])
+            np.array([x_max, y_max, z]),
+            np.array([x_max, y_min, z]),
+            np.array([x_min, y_min, z]),
+            np.array([x_min, y_max, z])
         ]

@@ -20,5 +20,6 @@ jobs:
           auto-activate-base: false
       - run: |
           pip install --editable pybullet_multigoal_gym
+          pip install --editable .
       - run: |
           python3 -m pytest
