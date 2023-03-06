@@ -17,6 +17,7 @@ class SimpleTrajectory(Trajectory):
         distance = sum([v**2 for v in self.direction])
         self.p = 0.1
         self.trajectoryDuration = (distance * 6 / self.p)**(1/3)
+        print(f"Duration of movement: {self.trajectoryDuration}")
 
 
     def getPosition(self, time : float) -> List[float]:

@@ -9,10 +9,13 @@ import pybullet_multigoal_gym as pg
 from seer.controller import Controller, ForceAngleController
 from seer.trajectory import TestTrajectory, Trajectory
 from seer.stability_metrics.adapter import RobotConfig
+from pybullet_multigoal_gym.utils.assets_dir import ASSETS_DIR
+from pybullet_multigoal_gym.utils.assets_dir import CUBE_LINK_NAME
+from seer.environment import SimpleEnvironment
 import measuredTorque
 
-MODE = "TORQUE"
-# MODE = "POSITION"
+# MODE = "TORQUE"
+MODE = "POSITION"
 
 clid = p.connect(p.SHARED_MEMORY)
 if (clid < 0):
@@ -22,13 +25,16 @@ if (clid < 0):
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 
 p.loadURDF("plane.urdf", [0, 0, -0.3])
+
+# model_urdf=str(ASSETS_DIR / 'robots' / 'kuka' / 'iiwa14_parallel_jaw_cube.urdf')
+# kukaId = p.loadURDF(model_urdf, [0, 0, 0])
 kukaId = p.loadURDF("kuka_iiwa/model.urdf", [0, 0, 0])
 # kukaId = p.loadURDF("kuka_iiwa/model_free_base.urdf")
-p.resetBasePositionAndOrientation(kukaId, [0, 0, 0], [0, 0, 0, 1])
+# p.resetBasePositionAndOrientation(kukaId, [0, 0, 0], [0, 0, 0, 1])
 kukaEndEffectorIndex = 6
 numJoints = p.getNumJoints(kukaId)
 if (numJoints != 7):
-  exit()
+    exit()
 kuka_joint_indices = list(range(numJoints))
 #lower limits for null space
 ll = [-.967, -2, -2.96, 0.19, -2.96, -2.09, -3.05]
@@ -52,7 +58,7 @@ p.setRealTimeSimulation(useRealTimeSimulation)
 
 trailDuration = 15
 
-def testController(controller : Controller, trajectory : Trajectory):
+def testController(controller : Controller):
     endEffectorLinkIndex=kukaEndEffectorIndex
     for i in range(numJoints):
         p.setJointMotorControl2(kukaId, i, p.VELOCITY_CONTROL, force=0)
@@ -69,10 +75,10 @@ def testController(controller : Controller, trajectory : Trajectory):
     p.stepSimulation()
     measuredTorques=  []
     # while True:
-    for i in range(100):
+    for i in range(1000):
         jointTorques = controller.getNextJointTorques()
         jointPositions = controller.getNextJointPositions()
-        jointTorques = measuredTorque.MEASURED_TORQUE[i]
+        # jointTorques = measuredTorque.MEASURED_TORQUE[i]
         # print(utils.formatVec(jointTorques))
         # jointTorques = [20] * 7
         for i in range(numJoints):
@@ -80,8 +86,7 @@ def testController(controller : Controller, trajectory : Trajectory):
                 p.setJointMotorControl2(bodyIndex=kukaId,
                                         jointIndex=i,
                                         controlMode=control_mode,
-                                        force=jointTorques[i],
-                                        targetVelocity=0)
+                                        force=jointTorques[i])
             else:
                 p.setJointMotorControl2(bodyIndex=kukaId,
                                     jointIndex=i,
@@ -97,10 +102,10 @@ def testController(controller : Controller, trajectory : Trajectory):
         res = p.getJointStates(kukaId, list(range(numJoints)))
         measuredJointTorques = [res[i][-1] for i in range(numJoints)]
         # measuredTorques.append(measuredJointTorques)
-        print(utils.formatVec(measuredJointTorques))
+        # print(utils.formatVec(measuredJointTorques))
 
         currentPos = controller.getEndEffectorWorldPosition()
-        targetPos = trajectory.getPosition(time.time())
+        targetPos = controller.trajectory.getPosition(time.time())
         p.addUserDebugLine(prevActualPos, currentPos, [1, 0, 0], 1, 10)
         p.addUserDebugLine(prevTargetPos, targetPos, [0, 0,0], 1, 10)
         prevActualPos = currentPos
@@ -110,17 +115,17 @@ def testController(controller : Controller, trajectory : Trajectory):
     # print(measuredTorques)
 
 if __name__ == "__main__":
-    target_positions = [0.2, 0.2, 1.3]  # target positions for the first three joints
-    # target_positions = [0.184, 0.048, 1.390]
-    # inverseKinematicControl(kukaId, kuka_joint_indices)
     robotId = kukaId
     jointIndices= kuka_joint_indices
     endEffectorLinkIndex = kukaEndEffectorIndex
     physicsClientId = 0
-    robotConfig = RobotConfig()
-    forceAngleController = ForceAngleController(robotId, jointIndices, endEffectorLinkIndex, [0.,0.,0.],robotConfig, physicsClientId)
+    # robotConfig = RobotConfig(cube_link_name=CUBE_LINK_NAME, urdf_path=model_urdf)
+    robotConfig = None
+    homeEndEffectorPosition =[0., 0., 0.9]
+    environment = SimpleEnvironment(robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition, physicsClientId)
+    forceAngleController = ForceAngleController(robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition ,robotConfig, physicsClientId, environment)
     testTrajectory = TestTrajectory(None, None)
     forceAngleController.setTrajectory(testTrajectory)
-    testController(forceAngleController, testTrajectory)
+    testController(forceAngleController)
     # torque = forceAngleController.getNextJointTorques()
     # print(torque)

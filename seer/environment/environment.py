@@ -1,0 +1,27 @@
+import  sys
+sys.path.append("../")
+from abc import ABC, abstractmethod
+from typing import List, Union
+
+
+class Environment(ABC):
+    @abstractmethod
+    def getEndEffectorWorldState(self) -> tuple:
+        # returns ee position and velocity
+        pass
+
+    @abstractmethod
+    def getJacobian(self, linkIndex : Union[int, None] = None) -> List[List[float]]:
+        pass
+
+    @abstractmethod
+    def getGravityVector(self) -> List[List[float]]:
+        pass
+
+    @abstractmethod
+    def computeInverseKinematics(self, endEffectorPosition : List[float]) -> List[float]:
+        pass
+    
+    @abstractmethod
+    def getEndEffectorHomePosition(self) -> List[float]:
+        pass
