@@ -11,7 +11,7 @@ import seer.utils as utils
 from seer.controller import Controller, ForceAngleController
 from seer.stability_metrics.adapter import RobotConfig
 from seer.trajectory import TestTrajectory, Trajectory
-
+# from pybullet_multigoal_gym.utils import CUBE_PATH
 config = {
     "box_scale" :       0.5,
     "box_mass_scale":   10.0,
@@ -30,14 +30,14 @@ planeId = p.loadURDF("plane.urdf", [0, 0, -0.3])
 model_path = "../pybullet_multigoal_gym/pybullet_multigoal_gym/assets/objects/assembling_shape/cube.urdf"
 
 # boxId = p.loadURDF("cube.urdf", useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
-boxId = p.loadURDF(model_path, useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
+boxId = p.loadURDF(CUBE_PATH, useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
+
+# boxId = p.loadURDF(model_path, useFixedBase=config["box_fixed"], globalScaling=config["box_scale"])
 # kukaId = p.loadURDF("kuka_iiwa/model_free_base.urdf", 0.193749, 0.345564, 0.120208, 0.002327,-0.000988, 0.996491, 0.083659)
 kukaId = p.loadURDF("kuka_iiwa/model_free_base.urdf")
-jointPositions = [3.559609, 0.411182, 0.862129, 1.744441, 0.077299, -1.129685, 0.006001]
+# kukaId = p.loadURDF("kuka_iiwa/model.urdf")
 
-
-cid = p.createConstraint(boxId, -1, kukaId, -1, p.JOINT_FIXED, [0, 0, 0], [0, 0, 0], [0., 0., -.26],
-                         [0, 0, 0, 1])
+cid = p.createConstraint(boxId, -1, kukaId, -1, p.JOINT_FIXED, [0, 0, 0], [0, 0, 0], [0., 0., -.26],[0, 0, 0, 1])
 
 baseorn = p.getQuaternionFromEuler([3.1415, 0, 0.3])
 baseorn = [0, 0, 0, 1]
@@ -59,8 +59,8 @@ if (numJoints != 7):
 for i in range(numJoints):
   p.resetJointState(kukaId, i, rp[i])
 kuka_joint_indices = list(range(numJoints))
-p.setGravity(0, 0, -10)
-useRealTimeSimulation = 0
+p.setGravity(0, 0, -9.81)
+useRealTimeSimulation = 1
 p.setRealTimeSimulation(useRealTimeSimulation)
 
 
@@ -80,7 +80,7 @@ def inverseKinematicControl(kukaId,joint_indices):
     orn = p.getQuaternionFromEuler([0, -math.pi, 0])
     jointPoses = p.calculateInverseKinematics(kukaId, endEffectorLinkIndex, targetPos, orn, ll, ul,jr, rp)
     for i in range(numJoints):
-      p.setJointMotorControl2(bodyIndex=kukaId,
+        p.setJointMotorControl2(bodyIndex=kukaId,
                               jointIndex=i,
                               controlMode=p.POSITION_CONTROL,
                               targetPosition=jointPoses[i],
@@ -107,29 +107,39 @@ def inverseKinematicControl(kukaId,joint_indices):
     prevActualPos = actualPos
     prevTargetPos = targetPos
 
-def testController(controller : Controller, trajectory : Trajectory):
+def testController(controller : Controller):
     endEffectorLinkIndex=kukaEndEffectorIndex
     # p.setJointMotorControl2(kukaId, endEffectorLinkIndex, p.VELOCITY_CONTROL, force=0)
     for i in range(numJoints):
         p.setJointMotorControl2(kukaId, i, p.VELOCITY_CONTROL, force=0)
     control_mode = p.TORQUE_CONTROL
+    control_mode = p.POSITION_CONTROL
     # Set the maximum joint torque for the robot (in Nm)
     max_torque = 500
     prevActualPos = [0.,0.,0.]
     prevTargetPos = [0.,0.,0.]
     while True:
         jointTorques = controller.getNextJointTorques()
-        print(utils.formatVec(jointTorques))
+        # print(utils.formatVec(jointTorques))
+        jointPositions = controller.getNextJointPositions()
         for i in range(numJoints):
+            # p.setJointMotorControl2(bodyIndex=kukaId,
+            #                         jointIndex=i,
+            #                         controlMode=control_mode,
+            #                         force=jointTorques[i])
             p.setJointMotorControl2(bodyIndex=kukaId,
                                     jointIndex=i,
                                     controlMode=control_mode,
-                                    force=jointTorques[i])
+                                    targetPosition=jointPositions[i],
+                                    targetVelocity=0,
+                                    force=500,
+                                    positionGain=0.03,
+                                    velocityGain=1)
         currentPos = controller.getEndEffectorWorldPosition()
-        targetPos = trajectory.getPosition(time.time())
+        targetPos = controller.trajectory.getPosition(time.time())
 
-        res = p.getJointStates(robotId, jointIndices, physicsClientId)
-        print([res[i][-1] for i in range(numJoints)])
+        # res = p.getJointStates(robotId, jointIndices, physicsClientId)
+        # print([res[i][-1] for i in range(numJoints)])
 
     # for i in range(numJoints):
     #   p.resetJointState(kukaId, i, jointPoses[i])
@@ -149,13 +159,10 @@ def testController(controller : Controller, trajectory : Trajectory):
         p.addUserDebugLine(prevTargetPos, targetPos, [0, 0,0], 1, 10)
         prevActualPos = currentPos
         prevTargetPos = targetPos
-        p.stepSimulation() 
         time.sleep(0.1)
+        p.stepSimulation() 
 
 if __name__ == "__main__":
-    target_positions = [0.2, 0.2, 1.3]  # target positions for the first three joints
-    # target_positions = [0.184, 0.048, 1.390]
-    # inverseKinematicControl(kukaId, kuka_joint_indices)
     robotId = kukaId
     jointIndices= kuka_joint_indices
     endEffectorLinkIndex = kukaEndEffectorIndex
@@ -164,6 +171,6 @@ if __name__ == "__main__":
     testTrajectory = TestTrajectory(None, None)
     forceAngleController = ForceAngleController(robotId, jointIndices, endEffectorLinkIndex, [0.,0.,0.],robotConfig, physicsClientId)
     forceAngleController.setTrajectory(testTrajectory)
-    testController(forceAngleController, testTrajectory)
+    testController(forceAngleController)
     # torque = forceAngleController.getNextJointTorques()
     # print(torque)
