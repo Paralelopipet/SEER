@@ -34,9 +34,8 @@ class ForceAngleController(Controller):
     
     This maybe needs the robot's geometry as input so as to compute the Jacobian for IK
     '''
-    def __init__(self, robotConfig : RobotConfig, environment: Environment):
+    def __init__(self, environment: Environment):
         self.environment = environment
-        self.robotConfig = robotConfig
         self.forceAngleMetric = self.environment.getForceAngleMetric()
         self.isTipping = False
         self.currentTime = time.time()
@@ -55,7 +54,6 @@ class ForceAngleController(Controller):
         verbose = False
         if verbose:
             self._printSummary()
-        print(self.getEndEffectorWorldPosition())
 
     def _estimateGradient(self, currentTime) -> float:
         alphas = list(zip(*self.alphas.toList()))
@@ -70,6 +68,8 @@ class ForceAngleController(Controller):
         return gradient
     
     def _updateState(self):
+        if self.trajectory is None:
+            raise Exception("No trajectory is currently set.")
         currentTime = time.time()
         timeElapsed = currentTime - self.currentTime
         if timeElapsed > 6 and not self.isTipping:

@@ -27,7 +27,7 @@ class SimpleEnvironment(Environment):
     def getJacobian(self, linkIndex : Union[int, None] = None) -> List[List[float]]:
         if linkIndex is None:
             linkIndex = self.endEffectorLinkIndex
-        currentJointPositions,_,_ = self._getJointStates()
+        currentJointPositions,_ = self._getJointStates()
         zero_vec = [0.] * len(currentJointPositions)
         result = self.p.getLinkState(self.robotId, linkIndex,
                         computeLinkVelocity=1,
@@ -38,7 +38,7 @@ class SimpleEnvironment(Environment):
         return jac_t
 
     def getGravityVector(self) -> List[float]:
-        currentJointPositions, _, _ = self._getJointStates()
+        currentJointPositions, _ = self._getJointStates()
         gravityVector = [0. for _ in range(len(currentJointPositions))]
         for i in range(len(currentJointPositions)):
             jacobian = self.getJacobian(linkIndex=i)
@@ -74,8 +74,8 @@ class SimpleEnvironment(Environment):
         joint_states = self.p.getJointStates(self.robotId, range(self.p.getNumJoints(self.robotId)))
         joint_positions = [state[0] for state in joint_states]
         joint_velocities = [state[1] for state in joint_states]
-        joint_torques = [state[3] for state in joint_states]
-        return joint_positions, joint_velocities, joint_torques
+        # joint_torques = [state[3] for state in joint_states]
+        return joint_positions, joint_velocities
 
     def _getCentreOfMass(self) -> List[float]:
         # Calculate the center of mass of the robot_id
@@ -85,7 +85,7 @@ class SimpleEnvironment(Environment):
             total_mass += link_mass
 
         com_position: List[float] = [0, 0, 0]
-        joint_poses, joint_vels,_ = self._getJointStates()
+        joint_poses, joint_vels = self._getJointStates()
         for link_idx in range(len(joint_poses)):
             link_mass = list(self.p.getDynamicsInfo(self.robotId, link_idx))[0]
             link_com = self.p.getLinkState(self.robotId, link_idx)[0]
