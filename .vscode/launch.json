@@ -8,6 +8,14 @@
             "program": "pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py",
             "console": "integratedTerminal",
             "justMyCode": false
+        },
+        {
+            "name": "Basic RL Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ],
     "compounds": []
