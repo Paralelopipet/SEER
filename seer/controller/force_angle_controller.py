@@ -131,6 +131,7 @@ class ForceAngleController(Controller):
     
     def getNextJointVelocities(self) -> List[float]:
         raise Exception("Not Implemented")
+        # endEffectorVelocity
     
     def getNextJointTorques(self) -> List[float]:
         self._updateState()
