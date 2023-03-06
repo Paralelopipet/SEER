@@ -12,8 +12,8 @@ from seer.stability_metrics.adapter import RobotConfig
 from pybullet_multigoal_gym.utils.assets_dir import ASSETS_DIR
 from pybullet_multigoal_gym.utils.assets_dir import CUBE_LINK_NAME
 from seer.environment import SimpleEnvironment
-import measuredTorque
-
+from seer.stability_metrics import StabilityMetricAdapter
+from seer.stability_metrics.force_angle import ForceAngleConfigAdapter, ForceAngle
 # MODE = "TORQUE"
 MODE = "POSITION"
 
@@ -27,8 +27,8 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.loadURDF("plane.urdf", [0, 0, -0.3])
 
 # model_urdf=str(ASSETS_DIR / 'robots' / 'kuka' / 'iiwa14_parallel_jaw_cube.urdf')
-# kukaId = p.loadURDF(model_urdf, [0, 0, 0])
-kukaId = p.loadURDF("kuka_iiwa/model.urdf", [0, 0, 0])
+model_urdf = "kuka_iiwa/model.urdf"
+kukaId = p.loadURDF(model_urdf, [0, 0, 0])
 # kukaId = p.loadURDF("kuka_iiwa/model_free_base.urdf")
 # p.resetBasePositionAndOrientation(kukaId, [0, 0, 0], [0, 0, 0, 1])
 kukaEndEffectorIndex = 6
@@ -57,12 +57,12 @@ useRealTimeSimulation = 1
 p.setRealTimeSimulation(useRealTimeSimulation)
 
 trailDuration = 15
-
-def testController(controller : Controller):
-    endEffectorLinkIndex=kukaEndEffectorIndex
-    for i in range(numJoints):
+for i in range(numJoints):
         p.setJointMotorControl2(kukaId, i, p.VELOCITY_CONTROL, force=0)
         p.enableJointForceTorqueSensor(kukaId, i, True)
+
+
+def testController(controller : Controller):
     # p.setJointMotorControl2(kukaId, endEffectorLinkIndex, p.VELOCITY_CONTROL, force=0)
     control_mode = p.POSITION_CONTROL
     if MODE == "TORQUE":
@@ -122,8 +122,15 @@ if __name__ == "__main__":
     # robotConfig = RobotConfig(cube_link_name=CUBE_LINK_NAME, urdf_path=model_urdf)
     robotConfig = None
     homeEndEffectorPosition =[0., 0., 0.9]
-    environment = SimpleEnvironment(robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition, physicsClientId)
-    forceAngleController = ForceAngleController(robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition ,robotConfig, physicsClientId, environment)
+    model_urdf2=str(ASSETS_DIR / 'robots' / 'kuka' / 'iiwa14_parallel_jaw_cube.urdf')
+
+    robotConfig = RobotConfig(cube_link_name=CUBE_LINK_NAME, urdf_path=model_urdf2)
+    forceAngleConfig = ForceAngleConfigAdapter.convert(robotConfig)
+    forceAngleCalculator = ForceAngle(forceAngleConfig)
+
+    environment = SimpleEnvironment(p, robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition, forceAngleCalculator)
+
+    forceAngleController = ForceAngleController(robotConfig, environment)
     testTrajectory = TestTrajectory(None, None)
     forceAngleController.setTrajectory(testTrajectory)
     testController(forceAngleController)

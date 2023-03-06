@@ -2,15 +2,16 @@ import  sys
 sys.path.append("../")
 from typing import List
 from seer.controller import Controller
-from seer.trajectory import TestTrajectory, Trajectory, SimpleTrajectory
+from seer.trajectory import SimpleTrajectory
 import time
-import pybullet as p
 import seer.utils as utils
 import numpy as np 
 import scipy.optimize as optimization
 from seer.stability_metrics.adapter.stability_metric_adapter import StabilityMetricAdapter
-from seer.stability_metrics.adapter import RobotConfig, RobotState
+from seer.stability_metrics.adapter import RobotConfig, RobotState 
 from seer.environment import Environment
+from seer.stability_metrics.force_angle import ForceAngle
+
 class KQueue:
     def __init__(self, k):
         self.queue = []
@@ -33,14 +34,10 @@ class ForceAngleController(Controller):
     
     This maybe needs the robot's geometry as input so as to compute the Jacobian for IK
     '''
-    def __init__(self, robotId: int, jointIndices: List[int], endEffectorLinkIndex : int, homeEndEffectorPosition: List[float], robotConfig : RobotConfig, physicsClientId: int, environment: Environment):
-        # self.endEffectorLinkIndex = endEffectorLinkIndex
+    def __init__(self, robotConfig : RobotConfig, environment: Environment):
         self.environment = environment
-        # self.homeEndEffectorPosition = homeEndEffectorPosition
-        # self.robotId = robotId
-        # self.jointIndices = jointIndices
-        # self.physicsClientId = physicsClientId
         self.robotConfig = robotConfig
+        self.forceAngleMetric = self.environment.getForceAngleMetric()
         self.isTipping = False
         self.currentTime = time.time()
         self.k=100
@@ -55,7 +52,7 @@ class ForceAngleController(Controller):
         self.tipoverPreventionResponseThreshold = 0.15 # if tut is below this threshold for >=k steps, initiate tipover prevention
 
         # self.forceAngleMetric = StabilityMetricAdapter.instance(self.robotConfig)
-        verbose = True
+        verbose = False
         if verbose:
             self._printSummary()
         print(self.getEndEffectorWorldPosition())
@@ -83,9 +80,8 @@ class ForceAngleController(Controller):
         currentTime = time.time()
         timeElapsed = currentTime - self.currentTime
         self.currentTime = currentTime
-        # TODO will need updating once RobotState is implemented
-        robotState = RobotState()
-        forceAngle = self.forceAngleMetric.get(robotState)
+        # TODO will need updating once RobotState is implemented, converts to forceanglestate
+        forceAngle = self.environment.getForceAngleMetric()
         self.alphas.add((forceAngle, currentTime))
         forceAngleGradientEstimate = self._estimateGradient(currentTime)
         self.timesUntilTipoverStat.add(-forceAngle / forceAngleGradientEstimate)
@@ -107,17 +103,12 @@ class ForceAngleController(Controller):
         return (self.timesUntilTipoverStat.max() < self.tipoverPreventionResponseThreshold) # or (self.timesUntilTipoverDyn.max() < self.tipoverPreventionReponseThreshold)
     
     def _generateTipoverPreventionTrajectory(self):
-        self.homeEndEffectorPosition
         currentEndEffectorPosition = self.getEndEffectorWorldPosition()
-        trajectory = SimpleTrajectory(currentEndEffectorPosition, self.homeEndEffectorPosition, time.time())
+        trajectory = SimpleTrajectory(currentEndEffectorPosition, self.environment.getEndEffectorHomePosition(), time.time())
         self.setTrajectory(trajectory)
 
     def _printSummary(self):
         print(f"Force Angle Controller")
-        print(f"Physics client id: {self.physicsClientId}")
-        print(f"Robot id: {self.robotId}")
-        print(f"End effector link index: {self.endEffectorLinkIndex}")
-        print(f"Number of joints: {len(self.jointIndices)}")
         # print(f"Intervals in trajectory planning: {self.intervals}s")
         print(f"Size of queue: {self.k}")
         print(f"Tipover Prevention Duration: {self.tipoverPreventionResponseDuration}")

@@ -2,7 +2,7 @@ import  sys
 sys.path.append("../")
 from abc import ABC, abstractmethod
 from typing import List, Union
-
+from seer.stability_metrics.force_angle import ForceAngle
 
 class Environment(ABC):
     @abstractmethod
@@ -24,4 +24,8 @@ class Environment(ABC):
     
     @abstractmethod
     def getEndEffectorHomePosition(self) -> List[float]:
+        pass
+
+    @abstractmethod
+    def getForceAngleMetric(self) -> float:
         pass
