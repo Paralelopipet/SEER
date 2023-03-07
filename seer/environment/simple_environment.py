@@ -1,9 +1,16 @@
 from typing import List, Union
-from seer.environment import Environment
-from seer import utils
+
 import numpy as np
-from seer.stability_metrics.force_angle import ForceAngle, ForceAngleConfigAdapter, ForceAngleStateAdapter
-from seer.stability_metrics.adapter import RobotConfig, StabilityMetricAdapter, RobotState
+from numpy.typing import NDArray
+
+from pybullet_multigoal_gym.utils.get_centre_of_mass import get_centre_of_mass
+from pybullet_multigoal_gym.utils.get_total_mass import get_total_mass
+from seer import utils
+from seer.environment import Environment
+from seer.stability_metrics.adapter import RobotState
+from seer.stability_metrics.force_angle import (ForceAngle,
+                                                ForceAngleStateAdapter)
+
 
 class SimpleEnvironment(Environment):
     def __init__(self, p, robotId : int, jointIndices : List[int], endEffectorLinkIndex : int, homeEndEffectorPosition : List[float], forceAngleCalculator : ForceAngle):
@@ -64,7 +71,7 @@ class SimpleEnvironment(Environment):
         fx, fy, fz, mx, my, mz = self.p.getJointState(self.robotId, 0)[2]
         centreOfMass = self._getCentreOfMass()
         robotState = RobotState(
-            centre_of_mass=np.array(centreOfMass),
+            centre_of_mass=centreOfMass,
             net_force=np.array([fx,fy,fz]),
             net_moment=np.array([mx,my,mz]))
         forceAngleState = ForceAngleStateAdapter.convert(robotState)
@@ -77,19 +84,7 @@ class SimpleEnvironment(Environment):
         # joint_torques = [state[3] for state in joint_states]
         return joint_positions, joint_velocities
 
-    def _getCentreOfMass(self) -> List[float]:
+    def _getCentreOfMass(self) -> NDArray:
         # Calculate the center of mass of the robot_id
-        total_mass = 0
-        for link_idx in range(self.p.getNumJoints(self.robotId)):
-            link_mass = self.p.getDynamicsInfo(self.robotId, link_idx)[0]
-            total_mass += link_mass
-
-        com_position: List[float] = [0, 0, 0]
-        joint_poses, joint_vels = self._getJointStates()
-        for link_idx in range(len(joint_poses)):
-            link_mass = list(self.p.getDynamicsInfo(self.robotId, link_idx))[0]
-            link_com = self.p.getLinkState(self.robotId, link_idx)[0]
-            link_com_position = [link_com[i] for i in range(3)]
-            link_com_offset = [(link_mass/total_mass) * link_com_position[i] for i in range(3)]
-            com_position = [com_position[i] + link_com_offset[i] for i in range(3)]
-        return com_position
+        # TODO here as well move
+        return get_centre_of_mass(self.p, self.robotId, get_total_mass(self.p, self.robotId))
