@@ -28,6 +28,9 @@ class KQueue:
     def toList(self):
         return self.queue
     
+    def __len__(self):
+        return len(self.queue)
+    
     
 class ForceAngleController(Controller):
     '''Implementation of force angle controller as proposed in https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=656414
@@ -56,9 +59,11 @@ class ForceAngleController(Controller):
             self._printSummary()
 
     def _estimateGradient(self, currentTime) -> float:
+        if len(self.alphas) < 4:
+            return 0
         alphas = list(zip(*self.alphas.toList()))
         alphas, times = np.array(alphas[0]), np.array(alphas[1])
-        initialGuess = np.array([0.,0.,0.,0.])
+        initialGuess = [0.,0.,0.,0.]
         def func(x, a, b, c, d):
             return a + b*x + c*x*x + d*(x**3)
         curve, _ = optimization.curve_fit(func, times, alphas, initialGuess)
@@ -67,7 +72,7 @@ class ForceAngleController(Controller):
         gradient = grad(currentTime, curve[1], curve[2], curve[3])
         return gradient
     
-    def _updateState(self):
+    def _updateState2(self):
         if self.trajectory is None:
             raise Exception("No trajectory is currently set.")
         currentTime = time.time()
@@ -76,26 +81,29 @@ class ForceAngleController(Controller):
             self._generateTipoverPreventionTrajectory()
             self.isTipping = True
 
-    def _updateState2(self):
+    def _updateState(self):
         currentTime = time.time()
         timeElapsed = currentTime - self.currentTime
         self.currentTime = currentTime
-        # TODO will need updating once RobotState is implemented, converts to forceanglestate
         forceAngle = self.environment.getForceAngleMetric()
         self.alphas.add((forceAngle, currentTime))
         forceAngleGradientEstimate = self._estimateGradient(currentTime)
-        self.timesUntilTipoverStat.add(-forceAngle / forceAngleGradientEstimate)
+        tut = -forceAngle / forceAngleGradientEstimate
+        self.timesUntilTipoverStat.add(tut)
 
         # Update internal state
         if self.timeElapsedTipoverPreventionInitiated > self.tipoverPreventionResponseDuration and not self._isTipoverTriggered():
+            print("No longer tipping")
             self.isTipping = False
             self.timeSinceTipoverPreventionInitiated = 0
         if self._isTipoverTriggered():
             if not self.isTipping:
+                print("tipping detected")
                 # set new trajectory here
                 self._generateTipoverPreventionTrajectory()
                 self.timeSinceTipoverPreventionInitiated = 0
             else:
+                print("tipover prevention running")
                 self.timeSinceTipoverPreventionInitiated += timeElapsed
             self.isTipping = True
     
