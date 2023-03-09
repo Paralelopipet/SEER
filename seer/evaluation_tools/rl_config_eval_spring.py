@@ -1,4 +1,4 @@
-from constants import *
+from seer.evaluation_tools.constants import *
 wandb_config = dict()
 
 
@@ -6,7 +6,7 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'eval spring with spring controller',
+    SCENARIO: 'eval spring - controller spring',
     SLEEP: 0.0,
     IS_TEST: True,
     PATH: 'Reach_HER_spring', # TODO Change to new location of weight

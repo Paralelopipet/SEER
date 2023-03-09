@@ -1,4 +1,4 @@
-from constants import *
+from seer.evaluation_tools.constants import *
 wandb_config = dict()
 
 run_params = {

@@ -6,11 +6,11 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'noisy action and maybe observation',
+    SCENARIO: 'eval noisy - controller noisy spring',
     SLEEP: 0.0,
-    IS_TEST: False,
-    PATH: 'Reach_HER_noisy',
-    LOAD_NETWORK_EP: None,
+    IS_TEST: True,
+    PATH: 'Reach_HER_noisy_spring',
+    LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
