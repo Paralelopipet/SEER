@@ -18,12 +18,12 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'spring',
+    SCENARIO: 'basic',
     SLEEP: 0.0,
-    SEEDS: [11, 22, 33, 44], # [0]
-    IS_TEST: False,
-    PATH: 'Reach_HER_spring',
-    LOAD_NETWORK_EP: None,
+    SEEDS: [11], # [0]
+    IS_TEST: True,
+    PATH: 'Reach_HER',
+    LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
@@ -46,17 +46,17 @@ env_params.update(
     observation_cam_id = [0],
     goal_cam_id = 0,
     target_range = 0.5,
-    plane_position = [0.,0.,-0.40], # with spring
-    # plane_position = [0., 0., -0.58],  # without spring
-    has_spring = True,
+    # plane_position = [0.,0.,-0.40], # with spring
+    plane_position = [0., 0., -0.58],  # without spring
+    # has_spring = True,
     joint_force_sensors=True,
     tip_penalty = -30.0,  # -20.0
     force_angle_reward_factor = 1.0,
     noise_stds = {
-        'pos' : 0,#100.05, 
-        'vel' : 0,#1000.00,
-        'tor' : 0,#10000.00,
-        'com' : 0,#10000000.00,
+        'pos' : 0.0,
+        'vel' : 0.0,
+        'tor' : 0.0,
+        'com' : 0.0,
     },
 )
 wandb_config.update(env_params)
@@ -83,7 +83,7 @@ algo_params = {
 
     'random_action_chance': 0.2,
     'noise_deviation': 0.05,
-    'action_noise_std': 0, # 1.0,
+    'action_noise_std': 0.0,
     'observation_noise_std' : env_params['noise_stds'],
 
     'training_epochs': 11,

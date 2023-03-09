@@ -18,12 +18,12 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'spring',
+    SCENARIO: 'eval spring',
     SLEEP: 0.0,
-    SEEDS: [11, 22, 33, 44], # [0]
-    IS_TEST: False,
-    PATH: 'Reach_HER_spring',
-    LOAD_NETWORK_EP: None,
+    SEEDS: [11], # [0]
+    IS_TEST: True,
+    PATH: 'Reach_HER_spring', # TODO Change to new location of weight
+    LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
