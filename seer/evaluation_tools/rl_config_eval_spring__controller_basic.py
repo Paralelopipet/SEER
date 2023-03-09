@@ -9,7 +9,7 @@ run_params = {
     SCENARIO: 'eval spring - controller noisy spring',
     SLEEP: 0.0,
     IS_TEST: True,
-    PATH: 'Reach_HER_noisy_spring', # TODO Change to new location of weight
+    PATH: 'Reach_HER', # TODO Change to new location of weight
     LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
