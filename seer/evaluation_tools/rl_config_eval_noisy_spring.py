@@ -5,7 +5,7 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'eval spring with noisy action and observation',
+    SCENARIO: 'eval spring with noisy action and observation - controller noisy spring',
     SLEEP: 0.0,
     IS_TEST: True,
     PATH: 'Reach_HER_noisy_spring',
@@ -69,7 +69,7 @@ algo_params = {
 
     'random_action_chance': 0.2,
     'noise_deviation': 0.05,
-    'action_noise_std': 1.0, # 0.0
+    'action_noise_std': 1.0, # TODO Damjan remove this if you're removing the noise from the action
     'observation_noise_std' : env_params['noise_stds'],
 
     'training_epochs': 11,

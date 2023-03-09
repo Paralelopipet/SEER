@@ -6,7 +6,7 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'basic',
+    SCENARIO: 'eval basic - controller basic',
     SLEEP: 0.0,
     IS_TEST: True,
     PATH: 'Reach_HER',
