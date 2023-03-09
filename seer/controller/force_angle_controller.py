@@ -30,6 +30,7 @@ class KQueue:
     
     def __len__(self):
         return len(self.queue)
+
     
     
 class ForceAngleController(Controller):
@@ -47,7 +48,9 @@ class ForceAngleController(Controller):
         self.kp = 0.1
         self.kd = 0.1
         self.timesUntilTipoverStat = KQueue(self.k) # needs to be implemented as a queue that records the last k time steps.
-        self.timesUntilTipoverDyn = KQueue(self.k) # needs to be implemented as a queue that records the last k time steps.
+        for _ in range(self.k):
+            self.timesUntilTipoverStat.add(100)
+        # self.timesUntilTipoverDyn = KQueue(self.k) # needs to be implemented as a queue that records the last k time steps.
         self.alphas = KQueue(100)
         self.tipoverPreventionResponseDuration = 3 # duration that tipover response enacted (sec)
         self.timeElapsedTipoverPreventionInitiated = 0
@@ -58,10 +61,10 @@ class ForceAngleController(Controller):
         if verbose:
             self._printSummary()
 
-    def _estimateGradient(self, currentTime) -> float:
-        if len(self.alphas) < 4:
+    def _estimateGradient2(self, currentTime) -> float:
+        if len(self.alphas) < 10:
             return 0
-        alphas = list(zip(*self.alphas.toList()))
+        alphas = list(zip(*self.alphas.toList()))[-10:]
         alphas, times = np.array(alphas[0]), np.array(alphas[1])
         initialGuess = [0.,0.,0.,0.]
         def func(x, a, b, c, d):
@@ -71,6 +74,13 @@ class ForceAngleController(Controller):
             return b + 2*c*x + 3*d*x*x
         gradient = grad(currentTime, curve[1], curve[2], curve[3])
         return gradient
+    
+    def _estimateGradient(self) -> float:
+        if len(self.alphas) < 2:
+            return 1
+        prev, t1 = self.alphas.queue[-2]
+        current, t2 = self.alphas.queue[-1]
+        return (current - prev) / (t2-t1)
     
     def _updateState2(self):
         if self.trajectory is None:
@@ -87,26 +97,39 @@ class ForceAngleController(Controller):
         self.currentTime = currentTime
         forceAngle = self.environment.getForceAngleMetric()
         self.alphas.add((forceAngle, currentTime))
-        forceAngleGradientEstimate = self._estimateGradient(currentTime)
+        forceAngleGradientEstimate = self._estimateGradient2(currentTime)
+        # forceAngleGradientEstimate = self._estimateGradient()
         tut = -forceAngle / forceAngleGradientEstimate
+        if tut < 0:
+            # THis means that actually forceAngle value is increasing resulting in negative tut in this case we should be setting tut to some arbitrary large value, anything is ok as long as it is above the threshold
+            tut = 1e10
+        # print(tut)
+        # print(forceAngle)
+        # print(forceAngleGradientEstimate)
+        # print(tut)
         self.timesUntilTipoverStat.add(tut)
 
-        # Update internal state
-        if self.timeElapsedTipoverPreventionInitiated > self.tipoverPreventionResponseDuration and not self._isTipoverTriggered():
-            print("No longer tipping")
-            self.isTipping = False
-            self.timeSinceTipoverPreventionInitiated = 0
-        if self._isTipoverTriggered():
-            if not self.isTipping:
-                print("tipping detected")
-                # set new trajectory here
-                self._generateTipoverPreventionTrajectory()
-                self.timeSinceTipoverPreventionInitiated = 0
+        if self.isTipping:
+            if self._isTipoverTriggered or self.timeElapsedTipoverPreventionInitiated < self.tipoverPreventionResponseDuration:
+                # print("Recovering from tipping state")
+                # stay in tipping state
+                self.timeElapsedTipoverPreventionInitiated += timeElapsed
             else:
-                print("tipover prevention running")
-                self.timeSinceTipoverPreventionInitiated += timeElapsed
-            self.isTipping = True
-    
+                print("Reached stable state again")
+                # transition to stable state
+                self.isTipping = False 
+                self.timeElapsedTipoverPreventionInitiated = 0 
+        else:
+            if self._isTipoverTriggered():
+                # transition to tipping state
+                print("Generating tipover response")
+                self.timeElapsedTipoverPreventionInitiated = 0
+                self.isTipping = True
+                self._generateTipoverPreventionTrajectory()
+            else:
+                pass
+                # print("Stable")
+
     def _isTipoverTriggered(self):
         return (self.timesUntilTipoverStat.max() < self.tipoverPreventionResponseThreshold) # or (self.timesUntilTipoverDyn.max() < self.tipoverPreventionReponseThreshold)
     
