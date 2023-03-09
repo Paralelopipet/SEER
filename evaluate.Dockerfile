@@ -11,4 +11,4 @@ SHELL ["conda", "run", "-n", "l32_seer", "/bin/bash", "-c"]
 
 RUN pip3 install --editable pybullet_multigoal_gym && pip3 install --editable pybullet_multigoal_implementation && pip3 install --editable .
 
-ENTRYPOINT [ "conda", "run", "--no-capture-output", "-n", "l32_seer", "python", "/seer/seer/evaluation_tools/wandb_local.py" ]
+ENTRYPOINT [ "conda", "run", "--no-capture-output", "-n", "l32_seer", "python", "/seer/pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py" ]
