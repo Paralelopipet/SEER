@@ -1,7 +1,6 @@
 from seer.evaluation_tools.constants import *
 wandb_config = dict()
 
-
 run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
@@ -73,7 +72,7 @@ algo_params = {
     'action_noise_std': 1.0, # 0.0
     'observation_noise_std' : env_params['noise_stds'],
 
-    'training_epochs': 11,
+    'training_epochs': 1,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,

@@ -73,7 +73,7 @@ algo_params = {
     'action_noise_std': 0.0,
     'observation_noise_std' : env_params['noise_stds'],
 
-    'training_epochs': 11,
+    'training_epochs': 1,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,
