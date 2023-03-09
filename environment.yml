@@ -26,4 +26,4 @@ dependencies:
     - typing-extensions==4.5.0
     - pydantic==1.10.*
     - pytest==7.2.*
-    - wandb-0.13.11
+    - wandb==0.13.11
