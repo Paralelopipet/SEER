@@ -16,6 +16,14 @@
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
             "console": "integratedTerminal",
             "justMyCode": false
+        },
+        {
+            "name": "Wandb Runner",
+            "type": "python",
+            "request": "launch",
+            "program": "seer/evaluation_tools/wandb_local.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ],
     "compounds": []
