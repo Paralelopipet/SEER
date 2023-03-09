@@ -18,16 +18,14 @@ run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'basic',
+    SCENARIO: 'spring',
     SLEEP: 0.0,
-    SEEDS: [11, 22, 33, 44],
-    # SEEDS: [33, 44],
-    # SEEDS: [0],
+    SEEDS: [11, 22, 33, 44], # [0]
     IS_TEST: False,
     PATH: 'Reach_HER_spring',
     LOAD_NETWORK_EP: None,
     SPRING_FORCE: 30,
-    BOX_MASS: 10,
+    # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
 wandb_config.update(run_params)
 
