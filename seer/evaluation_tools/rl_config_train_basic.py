@@ -1,18 +1,6 @@
+from constants import *
 wandb_config = dict()
 
-CONTROLLER = 'controller'
-RL = 'rl'
-CLASSIC = 'classic'
-ARCHITECTURE = 'architecture'
-TRAINING_SCRIPT = 'training_script'
-SLEEP = 'sleep'
-SEEDS = 'seeds'
-IS_TEST = 'is_test'
-PATH = 'path'
-LOAD_NETWORK_EP = 'load_network_ep'
-SCENARIO = 'scenario'
-SPRING_FORCE = 'spring_force'
-BOX_MASS = 'box_mass'
 
 run_params = {
     CONTROLLER: RL,  # rl or classic
@@ -20,7 +8,6 @@ run_params = {
     TRAINING_SCRIPT: 'FetchReachHER',
     SCENARIO: 'basic',
     SLEEP: 0.0,
-    SEEDS: [11, 22, 33, 44], # [0]
     IS_TEST: False,
     PATH: 'Reach_HER',
     LOAD_NETWORK_EP: None,
