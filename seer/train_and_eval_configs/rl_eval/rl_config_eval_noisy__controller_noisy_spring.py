@@ -1,15 +1,14 @@
-from seer.evaluation_tools.constants import *
+from seer.train_and_eval_configs.constants import *
 wandb_config = dict()
-
 
 run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'eval noisy - controller noisy',
+    SCENARIO: 'eval noisy - controller noisy spring',
     SLEEP: 0.0,
     IS_TEST: True,
-    PATH: 'Reach_HER_noisy',
+    PATH: 'Reach_HER_noisy_spring',
     LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file

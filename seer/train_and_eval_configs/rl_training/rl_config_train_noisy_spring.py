@@ -1,16 +1,15 @@
-from seer.evaluation_tools.constants import *
+from seer.train_and_eval_configs.constants import *
 wandb_config = dict()
-
 
 run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'eval spring - controller noisy spring',
+    SCENARIO: 'spring with noisy action and maybe observation',
     SLEEP: 0.0,
-    IS_TEST: True,
-    PATH: 'Reach_HER_noisy_spring', # TODO Change to new location of weight
-    LOAD_NETWORK_EP: 10,
+    IS_TEST: False,
+    PATH: 'Reach_HER_noisy_spring',
+    LOAD_NETWORK_EP: None,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
@@ -40,10 +39,10 @@ env_params.update(
     tip_penalty = -30.0,  # -20.0
     force_angle_reward_factor = 1.0,
     noise_stds = {
-        'pos' : 0,#100.05, 
-        'vel' : 0,#1000.00,
-        'tor' : 0,#10000.00,
-        'com' : 0,#10000000.00,
+        'pos' : 100.0, # 0.0
+        'vel' : 100.0, # 0.0
+        'tor' : 100.0, # 0.0
+        'com' : 100.0, # 0.0
     },
 )
 wandb_config.update(env_params)
@@ -70,10 +69,10 @@ algo_params = {
 
     'random_action_chance': 0.2,
     'noise_deviation': 0.05,
-    'action_noise_std': 0, # 1.0,
+    'action_noise_std': 1.0, # 0.0
     'observation_noise_std' : env_params['noise_stds'],
 
-    'training_epochs': 1,
+    'training_epochs': 11,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,

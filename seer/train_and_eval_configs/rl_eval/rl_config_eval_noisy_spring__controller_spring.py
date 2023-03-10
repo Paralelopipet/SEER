@@ -1,15 +1,16 @@
-from seer.evaluation_tools.constants import *
+from seer.train_and_eval_configs.constants import *
 wandb_config = dict()
+
 
 run_params = {
     CONTROLLER: RL,  # rl or classic
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
-    SCENARIO: 'spring with noisy action and maybe observation',
+    SCENARIO: 'eval noisy spring - controller spring',
     SLEEP: 0.0,
-    IS_TEST: False,
-    PATH: 'Reach_HER_noisy_spring',
-    LOAD_NETWORK_EP: None,
+    IS_TEST: True,
+    PATH: 'Reach_HER_spring',
+    LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
@@ -72,7 +73,7 @@ algo_params = {
     'action_noise_std': 1.0, # 0.0
     'observation_noise_std' : env_params['noise_stds'],
 
-    'training_epochs': 11,
+    'training_epochs': 1,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,

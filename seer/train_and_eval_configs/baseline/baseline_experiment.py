@@ -5,7 +5,7 @@ from  pybullet_multigoal_gym.envs.task_envs.kuka_single_step_envs import \
     KukaTipOverEnv
 from pybullet_multigoal_implementation.drl_implementation.agent.utils import plot
 # import gym
-from seer.evaluation_tools.baseline.baseline_config_spring import *
+from seer.train_and_eval_configs.baseline.baseline_config_spring import *
 from pybullet_multigoal_gym.examples.kuka_controller import run
 
 def main():
