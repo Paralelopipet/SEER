@@ -18,7 +18,7 @@ class GymEnvironment(SimpleEnvironment):
         super().__init__(self.kukaEnv.p, robotId, jointIndices, endEffectorLinkIndex, homeEndEffectorPosition, None)
 
     def computeInverseKinematics(self, endEffectorPosition : List[float]) -> List[float]:
-        return self.kukaEnv.robot.compute_ik(np.array(endEffectorPosition))
+        return self.kukaEnv.robot.compute_ik2(np.array(endEffectorPosition))
     
     def getForceAngleMetric(self) -> float:
         centreOfMass = self.kukaEnv.get_centre_of_mass()
