@@ -37,7 +37,8 @@ env_params.update(
     plane_position = [0., 0., -0.58],  # without spring
     has_spring = False,
     joint_force_sensors=True,
-    tip_penalty = -30.0,  # -20.0
+    tip_penalty = -30.0,  # -20.0,
+    tipping_threshold=0.5, 
     force_angle_reward_factor = 1.0,
     noise_stds = {
         'pos' : 0,#100.05, 
