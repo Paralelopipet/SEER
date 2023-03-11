@@ -46,8 +46,8 @@ env_params.update(
     observation_cam_id = [0],
     goal_cam_id = 0,
     target_range = 0.5,
-    plane_position = [0.,0.,-0.40], # with spring
-    # plane_position = [0., 0., -0.58],  # without spring
+    # plane_position = [0.,0.,-0.40], # with spring
+    plane_position = [0., 0., -0.58],  # without spring
     has_spring = False,
     joint_force_sensors=True,
     tip_penalty = -30.0,  # -20.0
