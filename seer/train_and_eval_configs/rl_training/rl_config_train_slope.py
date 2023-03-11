@@ -20,7 +20,7 @@ env_params = {}
 env_params.update(
     task = 'tip_over',
     gripper = 'parallel_jaw',
-    render = True,
+    render = False,
     binary_reward = True,  # Switch to true for stable reward
     gravity_angle = 0.3,
     joint_control = True,
