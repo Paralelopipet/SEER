@@ -4,7 +4,7 @@ from seer.trajectory import Trajectory
 from typing import List
 
 
-class SimpleTrajectory(Trajectory):
+class SimpleTrajectory2(Trajectory):
     def __init__(self, startPosition: List[float], endPosition: List[float], startTime: float):
         self.startPosition = startPosition
         self.endPosition = endPosition
@@ -21,13 +21,7 @@ class SimpleTrajectory(Trajectory):
 
 
     def getPosition(self, time : float) -> List[float]:
-        dt = time - self.startTime
-        assert dt >= 0
-        if dt >= self.trajectoryDuration:
-            return self.endPosition
-        distanceTravelledMagnitude = (-1/3 *self.p* dt**3)+ (0.5*self.trajectoryDuration *self.p* dt**2)
-        positionChange = self._normalizeVector(self.direction, distanceTravelledMagnitude)
-        return [s + dx for (s,dx) in zip(self.startPosition, positionChange)]
+        return self.endPosition
 
     def getVelocity(self, time : float) -> List[float]:
         dt = time - self.startTime

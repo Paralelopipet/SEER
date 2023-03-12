@@ -42,8 +42,8 @@ class ForceAngleController(Controller):
         self.environment = environment
         self.forceAngleMetric = self.environment.getForceAngleMetric()
         self.isTipping = False
-        self.currentTime = time.time()
-        self.k=100
+        self.currentTime = environment.getTime()# time.time()
+        self.k=10
         self.gravity = [0, 0, -9.81]
         self.kp = 0.1
         self.kd = 0.1
@@ -55,6 +55,7 @@ class ForceAngleController(Controller):
         self.tipoverPreventionResponseDuration = 3 # duration that tipover response enacted (sec)
         self.timeElapsedTipoverPreventionInitiated = 0
         self.tipoverPreventionResponseThreshold = 0.15 # if tut is below this threshold for >=k steps, initiate tipover prevention
+        self.tipoverReponsesGenerated = 0
 
         # self.forceAngleMetric = StabilityMetricAdapter.instance(self.robotConfig)
         verbose = False
@@ -85,14 +86,14 @@ class ForceAngleController(Controller):
     def _updateState2(self):
         if self.trajectory is None:
             raise Exception("No trajectory is currently set.")
-        currentTime = time.time()
+        currentTime = self.environment.getTime()
         timeElapsed = currentTime - self.currentTime
         if timeElapsed > 6 and not self.isTipping:
             self._generateTipoverPreventionTrajectory()
             self.isTipping = True
 
     def _updateState(self):
-        currentTime = time.time()
+        currentTime = self.environment.getTime()
         timeElapsed = currentTime - self.currentTime
         self.currentTime = currentTime
         forceAngle = self.environment.getForceAngleMetric()
@@ -110,8 +111,10 @@ class ForceAngleController(Controller):
         self.timesUntilTipoverStat.add(tut)
 
         if self.isTipping:
-            if self._isTipoverTriggered or self.timeElapsedTipoverPreventionInitiated < self.tipoverPreventionResponseDuration:
-                # print("Recovering from tipping state")
+            if self._isTipoverTriggered() or self.timeElapsedTipoverPreventionInitiated < self.tipoverPreventionResponseDuration:
+                # print(self._isTipoverTriggered())
+                # print(self.timeElapsedTipoverPreventionInitiated < self.tipoverPreventionResponseDuration)
+                print("Recovering from tipping state")
                 # stay in tipping state
                 self.timeElapsedTipoverPreventionInitiated += timeElapsed
             else:
@@ -134,9 +137,15 @@ class ForceAngleController(Controller):
         return (self.timesUntilTipoverStat.max() < self.tipoverPreventionResponseThreshold) # or (self.timesUntilTipoverDyn.max() < self.tipoverPreventionReponseThreshold)
     
     def _generateTipoverPreventionTrajectory(self):
+        self.tipoverReponsesGenerated +=1
         currentEndEffectorPosition = self.getEndEffectorWorldPosition()
-        trajectory = SimpleTrajectory(currentEndEffectorPosition, self.environment.getEndEffectorHomePosition(), time.time())
+        trajectory = SimpleTrajectory(currentEndEffectorPosition, self.environment.getEndEffectorHomePosition(), self.environment.getTime())
         self.setTrajectory(trajectory)
+
+    def tipoverResponsesSinceLastCheck(self):
+        foo = self.tipoverReponsesGenerated
+        self.tipoverReponsesGenerated = 0 
+        return foo
 
     def _printSummary(self):
         print(f"Force Angle Controller")
@@ -154,19 +163,22 @@ class ForceAngleController(Controller):
         pos, _ = self.getEndEffectorWorldState()
         return pos
     
-    def getNextJointPositions(self) -> List[float]:
+    def getNextJointPositions(self, t=None) -> List[float]:
         self._updateState()
-        endEffectorPosition = self.trajectory.getPosition(time.time())
+        if t is None:
+            t = self.environment.getTime()
+        endEffectorPosition = self.trajectory.getPosition(t)
         jointPoses = self.environment.computeInverseKinematics(endEffectorPosition)
         return jointPoses
     
-    def getNextJointVelocities(self) -> List[float]:
+    def getNextJointVelocities(self, t=None) -> List[float]:
         raise Exception("Not Implemented")
         # endEffectorVelocity
     
-    def getNextJointTorques(self) -> List[float]:
+    def getNextJointTorques(self, t=None) -> List[float]:
         self._updateState()
-        t = time.time()
+        if t is None:
+            t = self.environment.getTime()
         desiredEndEffectorPosition = self.trajectory.getPosition(t)
         desiredEndEffectorVelocity = self.trajectory.getVelocity(t)
         currentEndEffectorPosition, currentEndEffectorVelocity = self.environment.getEndEffectorWorldState() 

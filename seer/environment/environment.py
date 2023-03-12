@@ -29,3 +29,7 @@ class Environment(ABC):
     @abstractmethod
     def getForceAngleMetric(self) -> float:
         pass
+
+    @abstractmethod
+    def getTime(self) -> float:
+        pass

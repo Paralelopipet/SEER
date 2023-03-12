@@ -21,7 +21,7 @@ env_params = {}
 env_params.update(
     task = 'tip_over',
     gripper = 'parallel_jaw',
-    render = False,
+    render = True,
     binary_reward = True,  # Switch to true for stable reward
     joint_control = True,
     max_episode_steps = 50,

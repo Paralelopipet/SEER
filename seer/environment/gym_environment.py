@@ -23,3 +23,6 @@ class GymEnvironment(SimpleEnvironment):
     def getForceAngleMetric(self) -> float:
         centreOfMass = self.kukaEnv.get_centre_of_mass()
         return self.kukaEnv.force_angle(centreOfMass)
+    
+    def getTime(self) -> float:
+        return self.kukaEnv.simulation_time()
