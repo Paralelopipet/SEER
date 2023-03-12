@@ -36,4 +36,4 @@ Or try out the other launch configurations in `.vscode/launch.json`
 ## Run with Docker
 
 1. Build: `docker build -f evaluate.Dockerfile -t seer-evaluate .`
-2. Run: `wandb docker-run --memory=4g --cpus=3 -it seer-evaluate --use-wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"` 
+2. Run: `wandb docker-run --memory=4g --cpus=3 -it seer-evaluate --use_wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"` 
