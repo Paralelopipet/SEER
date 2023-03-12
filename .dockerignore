@@ -134,7 +134,3 @@ dmypy.json
 .DS_Store
 
 **/wandb/
-
-
-seer/evaluation_tools
-pybullet_multigoal_implementation/drl_implementation/examples

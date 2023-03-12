@@ -22,11 +22,12 @@ Run `pytest`
 
 ## Run Simulation
 
-`python pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py`
+`python pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py --use-wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"`
 
 ## Debug Simulation in VSCode
 
 Press `F5` (launch configuration `Tip Over Simulation`)
+Or try out the other launch configurations in `.vscode/launch.json`
 
 ### Codestyle
 
@@ -35,7 +36,4 @@ Press `F5` (launch configuration `Tip Over Simulation`)
 ## Run with Docker
 
 1. Build: `docker build -f evaluate.Dockerfile -t seer-evaluate .`
-2. Run: `wandb docker-run --memory=4g --cpus=3  --mount type=bind,source=<path to COPIED examples folder>,target=/seer/pybullet_multigoal_implementation/drl_implementation/examples --mount type=bind,source=<path to COPIED evaluation_tools folder>,target=/seer/seer/evaluation_tools seer-evaluate` 
-  - note that you need to replace `<path to COPIED examples folder>` by the absolute path to the examples folder you want to use (including the saved model checkpoints)
-  - note that you need to replace `<path to COPIED evaluation_tools folder>` by the absolute path to the evaluation_tools folder you want to use (including the configuration for if should use training / evaluation etc.)
-  - example: `wandb docker-run --memory=4g --cpus=3  --mount type=bind,source=C:\Users\mgraf\programming\cambridge\l32\SEER\pybullet_multigoal_implementation\drl_implementation\examples2,target=/seer/pybullet_multigoal_implementation/drl_implementation/examples --mount type=bind,source=C:\Users\mgraf\programming\cambridge\l32\SEER\seer\evaluation_tools2,target=/seer/seer/evaluation_tools seer-evaluate`
+2. Run: `wandb docker-run --memory=4g --cpus=3 -it seer-evaluate --use-wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"` 

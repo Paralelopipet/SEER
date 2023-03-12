@@ -14,6 +14,7 @@
             "type": "python",
             "request": "launch",
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
+            "args": ["--config", "seer.train_and_eval_configs.rl_config_eval_basic"],
             "console": "integratedTerminal",
             "justMyCode": false
         },
@@ -22,7 +23,7 @@
             "type": "python",
             "request": "launch",
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
-            "args": ["--use_wandb"],
+            "args": ["--use_wandb", "--config", "seer.train_and_eval_configs.rl_config_eval_basic"],
             "console": "integratedTerminal",
             "justMyCode": false
         }
