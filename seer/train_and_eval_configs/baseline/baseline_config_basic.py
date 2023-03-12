@@ -58,6 +58,7 @@ env_params.update(
         'tor' :  0.0,
         'com' :  0.0,
     },
+    checkReachability=True
 )
 wandb_config.update(env_params)
 
