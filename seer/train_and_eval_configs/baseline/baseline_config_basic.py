@@ -58,6 +58,8 @@ env_params.update(
         'tor' :  0.0,
         'com' :  0.0,
     },
+    target_min_distance = 0.3,
+    target_min_distance_xy = 0.23,
     checkReachability=True
 )
 wandb_config.update(env_params)
