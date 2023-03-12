@@ -37,6 +37,7 @@ env_params.update(
     has_spring = True,
     joint_force_sensors=True,
     tip_penalty = -30.0,  # -20.0
+    tipping_threshold=0.5, 
     force_angle_reward_factor = 1.0,
     noise_stds = {
         'pos' : 100.0, # 0.0
@@ -44,6 +45,8 @@ env_params.update(
         'tor' : 100.0, # 0.0
         'com' : 100.0, # 0.0
     },
+    target_min_distance = 0.3,
+    target_min_distance_xy = 0.1,
 )
 wandb_config.update(env_params)
 

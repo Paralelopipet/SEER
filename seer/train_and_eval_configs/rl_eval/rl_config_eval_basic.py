@@ -21,7 +21,7 @@ env_params = {}
 env_params.update(
     task = 'tip_over',
     gripper = 'parallel_jaw',
-    render = True,
+    render = False,
     binary_reward = True,  # Switch to true for stable reward
     joint_control = True,
     max_episode_steps = 50,
@@ -38,6 +38,7 @@ env_params.update(
     # has_spring = True,
     joint_force_sensors=True,
     tip_penalty = -30.0,  # -20.0
+    tipping_threshold=0.5, 
     force_angle_reward_factor = 1.0,
     noise_stds = {
         'pos' : 0.0,
@@ -45,6 +46,8 @@ env_params.update(
         'tor' : 0.0,
         'com' : 0.0,
     },
+    target_min_distance = 0.3,
+    target_min_distance_xy = 0.23,
 )
 wandb_config.update(env_params)
 

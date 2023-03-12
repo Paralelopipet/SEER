@@ -10,7 +10,7 @@
             "justMyCode": false
         },
         {
-            "name": "Basic RL Trainer",
+            "name": "RL Trainer",
             "type": "python",
             "request": "launch",
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
@@ -18,10 +18,11 @@
             "justMyCode": false
         },
         {
-            "name": "Wandb Runner",
+            "name": "RL Trainer (Wandb)",
             "type": "python",
             "request": "launch",
-            "program": "seer/evaluation_tools/wandb_local.py",
+            "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
+            "args": ["--use_wandb"],
             "console": "integratedTerminal",
             "justMyCode": false
         }
