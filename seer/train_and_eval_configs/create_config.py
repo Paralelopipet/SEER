@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Callable, List
+from typing import Callable, List, Union
 
 from seer.train_and_eval_configs.constants import *
 from seer.train_and_eval_configs.defaults import (default_rl_algo_params,
@@ -18,8 +18,8 @@ class Controller(Enum):
 def create_config(*,
     mode: ConfigMode,
     scenario_name: str,
-    weights_path: str,
     controller: Controller,
+    weights_path: Union[str, None] = None,
     modifiers: List[Callable] = []
  ):
     if mode == ConfigMode.EVAL:

@@ -22,7 +22,7 @@ Run `pytest`
 
 ## Run Simulation
 
-`python pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py --use-wandb --config "seer.train_and_eval_configs.rl_training.rl_config_train_basic"`
+`python seer/train_and_eval_configs/config_runner.py --use-wandb --config seer.train_and_eval_configs.rl_training.rl_config_train_basic`
 
 ## Debug Simulation in VSCode
 
@@ -36,7 +36,7 @@ Or try out the other launch configurations in `.vscode/launch.json`
 ## Run with Docker
 
 1. Build: `docker build -f evaluate.Dockerfile -t seer-evaluate .`
-2. Run: `wandb docker-run --memory=4g --cpus=3 --mount type=bind,source=<path to your examples folder>,target=/root/pybullet_multigoal_implementation/drl_implementation/examples -it seer-evaluate --use_wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"` 
+2. Run: `wandb docker-run --memory=4g --cpus=3 --mount type=bind,source=<path to your examples folder>,target=/root/pybullet_multigoal_implementation/drl_implementation/examples -it seer-evaluate --use_wandb --config seer.train_and_eval_configs.rl_eval.rl_config_eval_basic` 
   - note that you need to replace `<path to your examples folder>` by the absolute path to the examples folder (that include the saved model checkpoints)
   - This means that during build we are copying everything EXCEPT the examples folder. We are essentially symlinking the examples folder from the host to the container.
 

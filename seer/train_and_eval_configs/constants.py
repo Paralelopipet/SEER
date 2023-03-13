@@ -14,3 +14,4 @@ SPRING_FORCE = 'spring_force'
 BOX_MASS = 'box_mass'
 
 MAX_SPRING_FORCE = 30
+DEFAULT_SEEDS = [11]

@@ -25,6 +25,5 @@ ADD . /root
 
 RUN pip3 install --editable pybullet_multigoal_gym && pip3 install --editable pybullet_multigoal_implementation && pip3 install --editable .
 
-# ENTRYPOINT [ "conda", "run", "--no-capture-output", "-n", "l32_seer", "python", "/seer/pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py" ]
-ENTRYPOINT ["python", "/root/pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py"]
+ENTRYPOINT ["python", "/root/seer/train_and_eval_configs/config_runner.py"]
 
