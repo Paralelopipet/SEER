@@ -52,5 +52,4 @@ def _train_base_config():
     run_params[IS_TEST] = False
     run_params[LOAD_NETWORK_EP] = None
     env_params["target_min_distance_xy"] = 0.1
-    algo_params["training_epochs"] = 11
     return run_params, env_params, algo_params
