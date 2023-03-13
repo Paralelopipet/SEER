@@ -36,8 +36,8 @@ Or try out the other launch configurations in `.vscode/launch.json`
 ## Run with Docker
 
 1. Build: `docker build -f evaluate.Dockerfile -t seer-evaluate .`
-2. Run: `wandb docker-run --memory=4g --cpus=3 --mount type=bind,source=<path to your examples folder>,target=/root/pybullet_multigoal_implementation/drl_implementation/examples -it seer-evaluate --use_wandb --config seer.train_and_eval_configs.rl_eval.rl_config_eval_basic` 
-  - note that you need to replace `<path to your examples folder>` by the absolute path to the examples folder (that include the saved model checkpoints)
-  - This means that during build we are copying everything EXCEPT the examples folder. We are essentially symlinking the examples folder from the host to the container.
-
-(If you have a lot of failed builds, be careful that docker doesn't take up too much space. Many useful commands out there, here's an example of some: [link](https://stackoverflow.com/questions/39878939/docker-filling-up-storage-on-macos))
+  - this needs to be repeated whenever any files were changed
+  - If you have a lot of failed builds, be careful that docker doesn't take up too much space. Many useful commands out there, here's an example of some: [link](https://stackoverflow.com/questions/39878939/docker-filling-up-storage-on-macos)
+2. Run: `wandb docker-run --memory=4g --cpus=3 --mount "type=bind,source=$PWD/pybullet_multigoal_implementation/drl_implementation/examples,target=/root/pybullet_multigoal_implementation/drl_implementation/examples" -it seer-evaluate --use-wandb --config seer.train_and_eval_configs.rl_training.rl_config_train_basic`
+  - if a model is trained, its weights are saved to the local `examples` folder as if running without docker. No further action is necessary.
+  - in CMD, replace `$PWD` by the absolute path of this directory
