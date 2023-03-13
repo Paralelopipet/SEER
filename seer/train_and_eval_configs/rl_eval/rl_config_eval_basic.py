@@ -1,36 +1,12 @@
-from seer.train_and_eval_configs.rl_eval.defaults import default_run_params, default_env_params, default_algo_params
-from seer.train_and_eval_configs.constants import *
-from seer.train_and_eval_configs.rl_training.rl_config_train_basic import run_params as basic_train_run_params
-wandb_config = dict()
+from seer.train_and_eval_configs.create_config import create_config, ConfigMode
+from seer.train_and_eval_configs.rl_training.rl_config_train_basic import BASIC_WEIGHTS_PATH
 
-
-run_params = default_run_params.copy()
-run_params.update( {
-    SCENARIO: 'eval basic - controller basic',
-    PATH: basic_train_run_params[PATH]
-})
-wandb_config.update(run_params)
-
-
-env_params = default_env_params.copy()
-env_params.update(
-    # plane_position = [0.,0.,-0.40], # with spring
-    plane_position = [0., 0., -0.58],  # without spring
-    # has_spring = True,
-    noise_stds = {
-        'pos' : 0.0,
-        'vel' : 0.0,
-        'tor' : 0.0,
-        'com' : 0.0,
-    }
+run_params, env_params, algo_params = create_config(
+    mode=ConfigMode.TRAIN,
+    scenario_name="eval basic - controller basic",
+    weights_path=BASIC_WEIGHTS_PATH
 )
+wandb_config = dict()
+wandb_config.update(run_params)
 wandb_config.update(env_params)
-
-
-algo_params = default_algo_params.copy()
-algo_params.update({
-    'action_noise_std': 0.0,
-    'observation_noise_std' : env_params['noise_stds']
-})
 wandb_config.update(algo_params)
-

@@ -5,12 +5,9 @@ default_run_params = {
     ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
     TRAINING_SCRIPT: 'FetchReachHER',
     SLEEP: 0.0,
-    IS_TEST: True,
-    LOAD_NETWORK_EP: 10,
     SPRING_FORCE: 30,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
-
 
 default_env_params = {}
 default_env_params.update(
@@ -28,13 +25,18 @@ default_env_params.update(
     observation_cam_id = [0],
     goal_cam_id = 0,
     target_range = 0.5,
-    joint_force_sensors=True,
-    tip_penalty = -30.0,  # -20.0
+    plane_position = [0., 0., -0.58],
+    tip_penalty = -30.0,
     tipping_threshold=0.5, 
+    noise_stds = {
+        'pos' : 0.0,
+        'vel' : 0.0,
+        'tor' : 0.0,
+        'com' : 0.0
+    },
+    joint_force_sensors=True,
     force_angle_reward_factor = 1.0,
-    target_min_distance = 0.3,
-    target_min_distance_xy = 0.23,
-    checkReachability=True,
+    target_min_distance = 0.3
 )
 
 default_algo_params = {
@@ -58,8 +60,9 @@ default_algo_params = {
 
     'random_action_chance': 0.2,
     'noise_deviation': 0.05,
+    'action_noise_std': 0.0,
+    'observation_noise_std': default_env_params['noise_stds'],
 
-    'training_epochs': 1,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,

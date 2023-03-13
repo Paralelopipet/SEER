@@ -2,19 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Tip Over Simulation",
-            "type": "python",
-            "request": "launch",
-            "program": "pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py",
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
             "name": "RL Trainer",
             "type": "python",
             "request": "launch",
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
-            "args": ["--config", "seer.train_and_eval_configs.rl_config_eval_basic"],
+            "args": ["--config", "seer.train_and_eval_configs.rl_training.rl_config_train_basic"],
             "console": "integratedTerminal",
             "justMyCode": false
         },
@@ -23,7 +15,7 @@
             "type": "python",
             "request": "launch",
             "program": "pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py",
-            "args": ["--use_wandb", "--config", "seer.train_and_eval_configs.rl_config_eval_basic"],
+            "args": ["--use-wandb", "--config", "seer.train_and_eval_configs.rl_training.rl_config_train_basic"],
             "console": "integratedTerminal",
             "justMyCode": false
         }

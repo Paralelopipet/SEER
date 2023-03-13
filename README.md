@@ -22,7 +22,7 @@ Run `pytest`
 
 ## Run Simulation
 
-`python pybullet_multigoal_gym/pybullet_multigoal_gym/examples/kuka_tip_over.py --use-wandb --config "seer.train_and_eval_configs.rl_eval.rl_config_eval_basic"`
+`python pybullet_multigoal_implementation/drl_implementation/examples/FetchReachHER.py --use-wandb --config "seer.train_and_eval_configs.rl_training.rl_config_train_basic"`
 
 ## Debug Simulation in VSCode
 
