@@ -1,12 +1,12 @@
 from seer.train_and_eval_configs.create_config import Controller, create_config, ConfigMode
 from seer.train_and_eval_configs.modifiers.with_slope import with_slope
 from seer.train_and_eval_configs.modifiers.with_spring import with_spring
-from seer.train_and_eval_configs.rl_training.rl_config_train_noisy_slope import NOISY_SLOPE_WEIGHTS_PATH
+from seer.train_and_eval_configs.rl_training.rl_config_train_spring import SPRING_WEIGHTS_PATH
 
 run_params, env_params, algo_params = create_config(
     mode=ConfigMode.EVAL,
-    scenario_name="eval spring - controller noisy slope",
-    weights_path=NOISY_SLOPE_WEIGHTS_PATH,
+    scenario_name="eval spring slope - controller spring",
+    weights_path=SPRING_WEIGHTS_PATH,
     modifiers=[with_spring, with_slope],
     controller=Controller.RL
 )
