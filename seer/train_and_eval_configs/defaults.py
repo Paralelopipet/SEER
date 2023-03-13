@@ -1,11 +1,8 @@
 from seer.train_and_eval_configs.constants import *
 
 default_run_params = {
-    CONTROLLER: RL,  # rl or classic
-    ARCHITECTURE: 'ddpg-goal-conditioned', # specify style of controller
-    TRAINING_SCRIPT: 'FetchReachHER',
     SLEEP: 0.0,
-    SPRING_FORCE: 30,
+    SPRING_FORCE: MAX_SPRING_FORCE,
     # BOX_MASS: 10, # Symbolic param, since it is used in .urdf file
 }
 
@@ -39,7 +36,7 @@ default_env_params.update(
     target_min_distance = 0.3
 )
 
-default_algo_params = {
+default_rl_algo_params = {
     'hindsight': True,
     'her_sampling_strategy': 'future',
     # choose what type of HER buffer (see PrioritisedHindsightReplayBuffer)
