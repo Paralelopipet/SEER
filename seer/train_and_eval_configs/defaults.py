@@ -60,7 +60,6 @@ default_rl_algo_params = {
     'action_noise_std': 0.0,
     'observation_noise_std': default_env_params['noise_stds'],
 
-    "training_epochs": 11,
     'training_cycles': 50,
     'training_episodes': 16,
     'testing_gap': 10,

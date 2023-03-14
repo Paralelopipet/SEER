@@ -23,16 +23,16 @@ def create_config(*,
     modifiers: List[Callable] = []
  ):
     if mode == ConfigMode.EVAL:
-        run_params, env_params = _eval_base_config()
+        run_params, env_params, algo_params = _eval_base_config()
     elif mode == ConfigMode.TRAIN:
-        run_params, env_params = _train_base_config()
+        run_params, env_params, algo_params = _train_base_config()
     else:
         raise NotImplementedError()
 
     if controller == Controller.CLASSIC:
-        algo_params = _classic_base_config(run_params)
+        _classic_base_config(run_params, algo_params)
     elif controller == Controller.RL:
-        algo_params = _rl_base_config(run_params)
+        _rl_base_config(run_params, algo_params)
     else:
         raise NotImplementedError()
     
@@ -53,7 +53,10 @@ def _eval_base_config():
     run_params[LOAD_NETWORK_EP] = 10
     env_params["target_min_distance_xy"] = 0.23
     env_params["checkReachability"] = True
-    return run_params, env_params
+    algo_params = {
+        'training_epochs': 1
+    }    
+    return run_params, env_params, algo_params
 
 def _train_base_config():
     run_params = default_run_params.copy()
@@ -61,20 +64,22 @@ def _train_base_config():
     run_params[IS_TEST] = False
     run_params[LOAD_NETWORK_EP] = None
     env_params["target_min_distance_xy"] = 0.1
-    return run_params, env_params
+    algo_params = {
+        "training_epochs": 11
+    }
+    return run_params, env_params, algo_params
 
-def _rl_base_config(run_params):
+def _rl_base_config(run_params: dict, algo_params: dict):
     run_params.update({
         CONTROLLER: RL,
         ARCHITECTURE: 'ddpg-goal-conditioned',
         TRAINING_SCRIPT: 'FetchReachHER',
     })
-    return default_rl_algo_params.copy()
+    algo_params.update(default_rl_algo_params)
 
-def _classic_base_config(run_params):
+def _classic_base_config(run_params: dict, algo_params: dict):
     run_params.update({
         CONTROLLER: CLASSIC,
         ARCHITECTURE: 'force-angle',
         TRAINING_SCRIPT: 'baseline_experiment',
     })
-    return {}
