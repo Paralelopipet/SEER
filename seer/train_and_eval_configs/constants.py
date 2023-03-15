@@ -6,6 +6,7 @@ TRAINING_SCRIPT = 'training_script'
 SLEEP = 'sleep'
 SEED = 'seed'
 SEEDS = 'seeds'
+LOAD_MODEL_FROM_SEED = "load_model_from_seed"
 IS_TEST = 'is_test'
 PATH = 'path'
 LOAD_NETWORK_EP = 'load_network_ep'
@@ -14,4 +15,5 @@ SPRING_FORCE = 'spring_force'
 BOX_MASS = 'box_mass'
 
 MAX_SPRING_FORCE = 30
-DEFAULT_SEEDS = [11]
+DEFAULT_SEEDS = [11, 22, 33, 44]
+LOAD_MODELS_FROM_SEEDS = [11 for _ in DEFAULT_SEEDS]
