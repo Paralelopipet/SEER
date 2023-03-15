@@ -83,3 +83,7 @@ def _classic_base_config(run_params: dict, algo_params: dict):
         ARCHITECTURE: 'force-angle',
         TRAINING_SCRIPT: 'baseline_experiment',
     })
+    algo_params.update({
+        'training_cycles': default_rl_algo_params["training_cycles"],
+        'training_episodes': default_rl_algo_params["training_episodes"],
+    })

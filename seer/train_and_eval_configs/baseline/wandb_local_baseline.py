@@ -33,4 +33,8 @@ def wandb_run(use_wandb: bool, config):
                 SEEDS: seeds,
             })
         env: KukaTipOverEnv = pmg.make_env(**env_params)
-        run(env, seed)
+        run(env,
+            seed=seed,
+            num_epochs=config.algo_params['training_epochs'],
+            num_cycles=config.algo_params['training_cycles'],
+            num_episodes=config.algo_params['training_episodes'])
