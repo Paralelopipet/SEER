@@ -28,7 +28,7 @@ Run `pytest`
 
 - to train natively, run
 `python seer/train_and_eval_configs/config_runner.py --config seer.train_and_eval_configs.rl_training.<scenario to train>`
-- To train using Docker, run `wandb docker-run --memory=6g --cpus=4 --mount "type=bind,source=$PWD/pybullet_multigoal_implementation/drl_implementation/examples,target=/root/pybullet_multigoal_implementation/drl_implementation/examples" -it seer-evaluate --config seer.train_and_eval_configs.rl_training.<scenario to train>`
+- To train using Docker, run `docker run --memory=6g --cpus=4 --mount "type=bind,source=$PWD/pybullet_multigoal_implementation/drl_implementation/examples,target=/root/pybullet_multigoal_implementation/drl_implementation/examples" -it seer-evaluate --config seer.train_and_eval_configs.rl_training.<scenario to train>`
     - in CMD, replace `$PWD` by the absolute path of this directory
 - **In both cases**, replace `<scenario to train>` with the name of the Python file containing the scenario you want to train (i.e., `rl_config_train_basic`)
 - weights are saved to the `pybullet_multigoal_implementation/drl_implementation/examples` folder
@@ -37,7 +37,7 @@ Run `pytest`
 ## Evaluate
 - to evaluate natively, run
 `python seer/train_and_eval_configs/config_runner.py --config seer.train_and_eval_configs.<scenario to evaluate>`
-- To train using Docker, run `wandb docker-run --memory=4g --cpus=2 --mount "type=bind,source=$PWD/pybullet_multigoal_implementation/drl_implementation/examples,target=/root/pybullet_multigoal_implementation/drl_implementation/examples" -it seer-evaluate --config seer.train_and_eval_configs.<scenario to evaluate>`
+- To train using Docker, run `docker run --memory=4g --cpus=2 --mount "type=bind,source=$PWD/pybullet_multigoal_implementation/drl_implementation/examples,target=/root/pybullet_multigoal_implementation/drl_implementation/examples" -it seer-evaluate --config seer.train_and_eval_configs.<scenario to evaluate>`
     - in CMD, replace `$PWD` by the absolute path of this directory
 - **In both cases**, replace `<scenario to evaluate>` with the partial package name of the Python file containing the scenario you want to evaluate (i.e., `rl_eval.basic.rl_config_eval_basic` or `baseline.baseline_config_noisy_slope`)
 - if evaluating the reinforcement learning solution, weights need to be present in the `pybullet_multigoal_implementation/drl_implementation/examples` folder
