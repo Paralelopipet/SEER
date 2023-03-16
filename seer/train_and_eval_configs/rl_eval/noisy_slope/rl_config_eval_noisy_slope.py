@@ -5,7 +5,7 @@ from seer.train_and_eval_configs.rl_training.rl_config_train_noisy_slope import 
 
 run_params, env_params, algo_params = create_config(
     mode=ConfigMode.EVAL,
-    scenario_name="eval noisy - controller noisy slope",
+    scenario_name="eval noisy slope",
     weights_path=NOISY_SLOPE_WEIGHTS_PATH,
     modifiers=[with_noise, with_slope],
     controller=Controller.RL
