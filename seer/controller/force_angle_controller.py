@@ -70,7 +70,7 @@ class ForceAngleController(Controller):
         initialGuess = [0.,0.,0.,0.]
         def func(x, a, b, c, d):
             return a + b*x + c*x*x + d*(x**3)
-        curve, _ = optimization.curve_fit(func, times, alphas, initialGuess)
+        curve, _ = optimization.curve_fit(func, times, alphas, initialGuess,maxfev=1100)
         def grad(x,b,c,d):
             return b + 2*c*x + 3*d*x*x
         gradient = grad(currentTime, curve[1], curve[2], curve[3])
