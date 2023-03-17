@@ -37,4 +37,5 @@ def wandb_run(use_wandb: bool, config):
             seed=seed,
             num_epochs=config.algo_params['training_epochs'],
             num_cycles=config.algo_params['training_cycles'],
-            num_episodes=config.algo_params['training_episodes'])
+            num_episodes=config.algo_params['training_episodes'],
+            action_noise_std=config.algo_params['action_noise_std'])
